@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Question from "./Question";
+import { useStyles } from "./styles";
+import { Card, CardContent } from "@material-ui/core";
+import { calculateScore } from "./helperFunctions";
 
 function App() {
+  const classes = useStyles();
   const [results, setResults] = useState("");
+  const [score, setScore] = useState(0);
 
   const fetchTriviaData = () => {
     fetch(
@@ -20,8 +25,13 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <Question results={results} />
+    <div className={classes.root}>
+      <Card>
+        <CardContent>
+          <div className={classes.score}>{calculateScore(score)}%</div>
+          <Question results={results} width="100%" setScore={setScore} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

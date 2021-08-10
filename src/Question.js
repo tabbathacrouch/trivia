@@ -5,19 +5,18 @@ import {
   CardActions,
   Typography,
   IconButton,
-  Button,
 } from "@material-ui/core";
+import { useStyles } from "./styles";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
-import { useStyles } from "./styles";
-import { cleanString, shuffleArray } from "./helperFunctions";
+import AnswerChoices from "./AnswerChoices";
+import { cleanString } from "./helperFunctions";
 
-function Question({ results }) {
+function Question({ results, setScore }) {
   const classes = useStyles();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isBeforeDisabled, setIsBeforeDisabled] = useState(true);
   const [isNextDisabled, setIsNextDisabled] = useState(false);
-  const [selectedAnswer, setselectedAnswer] = useState("");
 
   const handleNavigateBefore = (event) => {
     event.preventDefault();
@@ -39,22 +38,12 @@ function Question({ results }) {
     }
   };
 
-  const handleButtonClick = (event) => {
-    setselectedAnswer(event.target.innerText);
-  };
-
-  console.log(results);
-
   return (
     <div className={classes.container}>
       {results &&
         results.map((question, index) => {
-          const answerChoices = shuffleArray(
-            question.incorrect_answers.concat([question.correct_answer])
-          );
-
           return (
-            <Card key={index} className={classes.root}>
+            <Card key={index}>
               <CardContent style={{ display: "flex", flexDirection: "column" }}>
                 <div
                   style={{
@@ -88,17 +77,7 @@ function Question({ results }) {
                 </Typography>
 
                 <div className={classes.answersContainer}>
-                  {answerChoices.map((ac, i) => {
-                    return (
-                      <Button
-                        className={classes.answerChoice}
-                        onClick={handleButtonClick}
-                        key={i}
-                      >
-                        {ac}
-                      </Button>
-                    );
-                  })}
+                  <AnswerChoices question={question} setScore={setScore} />
                 </div>
               </CardContent>
             </Card>

@@ -19,3 +19,7 @@ export const shuffleArray = (array) => {
   }
   return array;
 };
+
+export const calculateScore = (score) => {
+  return Math.round((score / 30) * 100);
+};
