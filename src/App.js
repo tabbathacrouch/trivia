@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Question from "./Question";
-import { useStyles } from "./styles";
-import { Card, CardContent } from "@material-ui/core";
-import { calculateScore } from "./helperFunctions";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import TriviaQuiz from "./TriviaQuiz";
+import SignIn from "./SignIn";
+import Register from "./Register";
+import "./App.css";
 
 function App() {
-  const classes = useStyles();
   const [results, setResults] = useState("");
   const [score, setScore] = useState(0);
 
@@ -25,14 +25,35 @@ function App() {
   }, []);
 
   return (
-    <div className={classes.root}>
-      <Card>
-        <CardContent>
-          <div className={classes.score}>{calculateScore(score)}%</div>
-          <Question results={results} width="100%" setScore={setScore} />
-        </CardContent>
-      </Card>
-    </div>
+    <Router>
+      <div>
+        <nav className="navbar">
+          <ul>
+            <li className="link">
+              <Link to="/">Trivia Quiz</Link>
+            </li>
+            <li className="link">
+              <Link to="/sign-in">Sign in</Link>
+            </li>
+            <li className="link">
+              <Link to="/register">Register</Link>
+            </li>
+          </ul>
+        </nav>
+
+        <Switch>
+          <Route path="/sign-in">
+            <SignIn />
+          </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/">
+            <TriviaQuiz results={results} score={score} setScore={setScore} />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
