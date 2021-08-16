@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useHistory } from "react-router-dom";
 import {
   Avatar,
   Container,
@@ -12,30 +14,29 @@ import {
   Link,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+import { useStyles } from "../styles/styles";
 
 function SignIn() {
   const classes = useStyles();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
+  const history = useHistory();
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    try {
+      setError("");
+      setLoading(true);
+      await signIn(email, password);
+      history.push("/trivia-quiz");
+    } catch (error) {
+      setError("Failed to sign in");
+      setLoading(false);
+    }
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -48,6 +49,7 @@ function SignIn() {
           Sign in
         </Typography>
         <form className={classes.form} noValidate>
+          {error && error}
           <TextField
             variant="outlined"
             margin="normal"
@@ -55,20 +57,20 @@ function SignIn() {
             fullWidth
             id="email"
             label="Email Address"
-            name="email"
-            autoComplete="email"
             autoFocus
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            name="password"
             label="Password"
             type="password"
             id="password"
-            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -80,17 +82,19 @@ function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={handleSubmit}
+            disabled={loading}
           >
             Sign In
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link href="/reset-password" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/register" variant="body2">
                 {"Don't have an account? Register"}
               </Link>
             </Grid>

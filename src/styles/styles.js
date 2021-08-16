@@ -8,17 +8,20 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     marginBlock: "5em",
   },
-  questionNumber: { fontSize: "1.5em", paddingBottom: theme.spacing(2) },
+  questionNumber: { fontSize: "1.5em" },
   question: {
     fontSize: "1.25em",
+    paddingLeft: theme.spacing(4),
   },
   answersContainer: {
     marginTop: theme.spacing(1),
     display: "flex",
     flexDirection: "column",
+    width: "75vw",
   },
   answerChoice: {
-    padding: theme.spacing(0),
+    padding: theme.spacing(0.5),
+    paddingLeft: theme.spacing(2),
     margin: theme.spacing(1),
     lineHeight: theme.spacing(0.5),
     justifyContent: "flex-start",
@@ -28,9 +31,25 @@ export const useStyles = makeStyles((theme) => ({
     },
     "&:disabled": { color: "black" },
   },
-
   controls: {
     display: "flex",
     justifyContent: "flex-end",
+  },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%",
+    marginTop: theme.spacing(3),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
   },
 }));

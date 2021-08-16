@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@material-ui/core";
-import { useStyles } from "./styles";
-import { shuffleArray } from "./helperFunctions";
+import { Container, Button } from "@material-ui/core";
+import { useStyles } from "../styles/styles";
+import { cleanString, shuffleArray } from "../helper functions/helperFunctions";
 
-function AnswerChoices({ question, setScore }) {
-  const [selectedAnswer, setselectedAnswer] = useState("");
+function AnswerChoices({
+  question,
+  setScore,
+  selectedAnswers,
+  setSelectedAnswers,
+}) {
   const [answerChoices, setAnswerChoices] = useState([]);
   const [isDisabled, setisDisabled] = useState(false);
   const classes = useStyles();
@@ -20,18 +24,23 @@ function AnswerChoices({ question, setScore }) {
     } else if (event.target.offsetParent.type === "button") {
       event.target.offsetParent.style.backgroundColor = "#f44336";
     }
-    setselectedAnswer(event.target.innerHTML);
+    setSelectedAnswers((prevState) => [...prevState, event.target.innerHTML]);
     setisDisabled(!isDisabled);
   };
 
   useEffect(() => {
+    const incorrect_answers = question.incorrect_answers.map((AC) =>
+      cleanString(AC)
+    );
     setAnswerChoices(() =>
-      shuffleArray(question.incorrect_answers.concat([question.correct_answer]))
+      shuffleArray(
+        incorrect_answers.concat([cleanString(question.correct_answer)])
+      )
     );
   }, [question]);
 
   return (
-    <div className={classes.answersContainer}>
+    <Container fixed className={classes.answersContainer}>
       {answerChoices.map((ac, i) => {
         return (
           <Button
@@ -44,7 +53,7 @@ function AnswerChoices({ question, setScore }) {
           </Button>
         );
       })}
-    </div>
+    </Container>
   );
 }
 

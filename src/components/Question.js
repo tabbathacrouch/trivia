@@ -6,13 +6,13 @@ import {
   Typography,
   IconButton,
 } from "@material-ui/core";
-import { useStyles } from "./styles";
+import { useStyles } from "../styles/styles";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import AnswerChoices from "./AnswerChoices";
-import { cleanString } from "./helperFunctions";
+import { cleanString } from "../helper functions/helperFunctions";
 
-function Question({ results, setScore }) {
+function Question({ results, setScore, selectedAnswers, setSelectedAnswers }) {
   const classes = useStyles();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isBeforeDisabled, setIsBeforeDisabled] = useState(true);
@@ -77,7 +77,12 @@ function Question({ results, setScore }) {
                 </Typography>
 
                 <div className={classes.answersContainer}>
-                  <AnswerChoices question={question} setScore={setScore} />
+                  <AnswerChoices
+                    question={question}
+                    setScore={setScore}
+                    selectedAnswers={selectedAnswers}
+                    setSelectedAnswers={setSelectedAnswers}
+                  />
                 </div>
               </CardContent>
             </Card>

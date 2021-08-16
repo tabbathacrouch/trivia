@@ -13,6 +13,12 @@
   justify-content: flex-end;
 }
 
+li {
+  padding-right: 2rem;
+  font-size: 1.3rem;
+  color: white;
+}
+
 .link > a {
   padding-right: 2rem;
   font-size: 1.3rem;
