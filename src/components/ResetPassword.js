@@ -10,6 +10,7 @@ import {
   Link,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Alert from "@material-ui/lab/Alert";
 import { useStyles } from "../styles/styles";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -45,8 +46,12 @@ function ResetPassword() {
         <Typography component="h1" variant="h5">
           Reset Password
         </Typography>
-        <form className={classes.form} noValidate>
-          {error && error}
+        <form className={classes.form}>
+          {error ? (
+            <Alert variant="outlined" severity="error">
+              {error}
+            </Alert>
+          ) : null}
           {message && message}
           <TextField
             variant="outlined"

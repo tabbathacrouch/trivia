@@ -20,8 +20,6 @@ export const useStyles = makeStyles((theme) => ({
     width: "75vw",
   },
   answerChoice: {
-    padding: theme.spacing(0.5),
-    paddingLeft: theme.spacing(2),
     margin: theme.spacing(1),
     lineHeight: theme.spacing(0.5),
     justifyContent: "flex-start",
@@ -30,6 +28,11 @@ export const useStyles = makeStyles((theme) => ({
       backgroundColor: "#fff9c4",
     },
     "&:disabled": { color: "black" },
+  },
+  response: {
+    padding: theme.spacing(1.5),
+    margin: theme.spacing(-1.5),
+    fontSize: "1.25em",
   },
   controls: {
     display: "flex",

@@ -1,47 +1,25 @@
-import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  IconButton,
-} from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, Typography } from "@material-ui/core";
 import { useStyles } from "../styles/styles";
-import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+
 import AnswerChoices from "./AnswerChoices";
 import { cleanString } from "../helper functions/helperFunctions";
+import { useAuth } from "../contexts/AuthContext";
 
-function Question({ results, setScore, selectedAnswers, setSelectedAnswers }) {
+function Question({ triviaQuizData, setScore, currentIndex, setCurrentIndex }) {
   const classes = useStyles();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isBeforeDisabled, setIsBeforeDisabled] = useState(true);
-  const [isNextDisabled, setIsNextDisabled] = useState(false);
+  const [selection, setSelection] = useState("");
 
-  const handleNavigateBefore = (event) => {
-    event.preventDefault();
-    setCurrentIndex((prevState) => prevState - 1);
-    if (currentIndex === 1 || currentIndex === 0) {
-      setIsBeforeDisabled(true);
-    } else {
-      setIsNextDisabled(false);
-    }
-  };
+  const { addTriviaResponse } = useAuth();
 
-  const handleNavigateNext = (event) => {
-    event.preventDefault();
-    setCurrentIndex((prevState) => prevState + 1);
-    if (currentIndex === 28 || currentIndex === 30) {
-      setIsNextDisabled(true);
-    } else {
-      setIsBeforeDisabled(false);
-    }
-  };
+  useEffect(() => {
+    addTriviaResponse(selection);
+  }, [addTriviaResponse, selection]);
 
   return (
     <div className={classes.container}>
-      {results &&
-        results.map((question, index) => {
+      {
+        triviaQuizData.map((question, index) => {
           return (
             <Card key={index}>
               <CardContent style={{ display: "flex", flexDirection: "column" }}>
@@ -53,41 +31,31 @@ function Question({ results, setScore, selectedAnswers, setSelectedAnswers }) {
                   }}
                 >
                   <Typography className={classes.questionNumber}>
-                    {results.indexOf(question) + 1}.)
+                    {index + 1}.)
                   </Typography>
-                  <CardActions className={classes.controls}>
-                    <IconButton
-                      aria-label="previous"
-                      onClick={handleNavigateBefore}
-                      disabled={isBeforeDisabled}
-                    >
-                      <NavigateBeforeIcon />
-                    </IconButton>
-                    <IconButton
-                      aria-label="next"
-                      onClick={handleNavigateNext}
-                      disabled={isNextDisabled}
-                    >
-                      <NavigateNextIcon />
-                    </IconButton>
-                  </CardActions>
+                  <div className={classes.questionNumber}>
+                    <Typography>{index + 1}/30</Typography>
+                  </div>
                 </div>
                 <Typography className={classes.question}>
                   {cleanString(question.question)}
                 </Typography>
-
                 <div className={classes.answersContainer}>
                   <AnswerChoices
+                    index={index}
                     question={question}
                     setScore={setScore}
-                    selectedAnswers={selectedAnswers}
-                    setSelectedAnswers={setSelectedAnswers}
+                    selection={selection}
+                    setSelection={setSelection}
+                    currentIndex={currentIndex}
+                    setCurrentIndex={setCurrentIndex}
                   />
                 </div>
               </CardContent>
             </Card>
           );
-        })[currentIndex]}
+        })[currentIndex]
+      }
     </div>
   );
 }

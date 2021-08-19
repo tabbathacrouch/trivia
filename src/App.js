@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import TriviaQuiz from "./components/TriviaQuiz";
 import SignIn from "./components/SignIn";
@@ -9,24 +9,7 @@ import { useAuth } from "./contexts/AuthContext";
 import "./App.css";
 
 function App() {
-  const [results, setResults] = useState("");
-  const [score, setScore] = useState(0);
   const { currentUser, signOut } = useAuth();
-
-  const fetchTriviaData = () => {
-    fetch(
-      "https://opentdb.com/api.php?amount=30&category=11&difficulty=easy&type=multiple"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setResults(data.results);
-      })
-      .catch((error) => console.log(error));
-  };
-
-  useEffect(() => {
-    fetchTriviaData();
-  }, []);
 
   async function handleSignOut() {
     try {
@@ -53,7 +36,7 @@ function App() {
             ) : (
               <>
                 <li className="link">
-                  <Link to="/sign-in">Sign in</Link>
+                  <Link to="/">Sign in</Link>
                 </li>
                 <li className="link">
                   <Link to="/register">Register</Link>
@@ -64,7 +47,7 @@ function App() {
         </nav>
 
         <Switch>
-          <Route path="/sign-in">
+          <Route exact path="/">
             <SignIn />
           </Route>
           <Route path="/register">
@@ -73,17 +56,7 @@ function App() {
           <Route path="/reset-password">
             <ResetPassword />
           </Route>
-          <PrivateRoute
-            path="/trivia-quiz"
-            exact
-            component={TriviaQuiz}
-            results={results}
-            score={score}
-            setScore={setScore}
-          />
-          {/* <Route exact path="/">
-            <TriviaQuiz results={results} score={score} setScore={setScore} />
-          </Route> */}
+          <PrivateRoute path="/trivia-quiz" exact component={TriviaQuiz} />
         </Switch>
       </div>
     </Router>

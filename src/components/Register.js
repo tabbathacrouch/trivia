@@ -12,6 +12,7 @@ import {
   Link,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Alert from "@material-ui/lab/Alert";
 import { useStyles } from "../styles/styles";
 
 function Register() {
@@ -48,8 +49,12 @@ function Register() {
         <Typography component="h1" variant="h5">
           Register
         </Typography>
-        <form className={classes.form} noValidate>
-          {error && error}
+        <form className={classes.form}>
+          {error ? (
+            <Alert variant="outlined" severity="error">
+              {error}
+            </Alert>
+          ) : null}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -108,7 +113,7 @@ function Register() {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/sign-in" variant="body2">
+              <Link href="/" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
