@@ -30,8 +30,8 @@ function Register() {
     try {
       setError("");
       setLoading(true);
-      await register(name, email, password);
-      history.push("/trivia-quiz");
+      await register(email, password);
+      history.push("/dashboard");
     } catch (error) {
       console.log(error);
       setError("Failed to create an account");

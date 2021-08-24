@@ -1,67 +1,117 @@
-import React, { useState } from "react";
-import { Card, CardContent, Button } from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import { Button } from "@material-ui/core";
+import SaveIcon from "@material-ui/icons/Save";
 import Question from "./Question";
 import { useAuth } from "../contexts/AuthContext";
 import { useStyles } from "../styles/styles";
 import TriviaResponsesDisplay from "./TriviaResponsesDisplay";
+import { useHistory } from "react-router-dom";
 
-function TriviaQuiz({ score, setScore }) {
+function TriviaQuiz() {
   const classes = useStyles();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isQuizComplete, setIsQuizComplete] = useState(false);
+  const [displayQuiz, setDisplayQuiz] = useState(true);
   const {
-    triviaQuizData,
+    db,
+    currentUser,
+    categoryId,
+    score,
+    setScore,
     setTriviaQuizData,
-    getTriviaResponses,
-    addScore,
+    setTriviaQuizResponses,
     triviaQuizResponses,
   } = useAuth();
+  const history = useHistory();
 
-  const handleViewTriviaResponses = () => {
-    setIsQuizComplete(true);
-    // addScore(score);
-    getTriviaResponses();
+  function addScore(categoryId, score) {
+    db.collection(`users/${currentUser.email}/triviaQuizzes`)
+      .doc(`${categoryId}`)
+      .update({
+        score: score,
+      });
+  }
+
+  useEffect(() => {
+    let currentScore = [];
+    triviaQuizResponses.forEach((response) => {
+      if (response.correct === true) {
+        currentScore.push(response);
+      }
+    });
+    setScore(currentScore.length);
+    addScore(categoryId, score);
+  });
+
+  function getTriviaQuizResponses(categoryId) {
+    db.collection(`users/${currentUser.email}/triviaQuizzes`)
+      .doc(`${categoryId}`)
+      .get()
+      .then((doc) => setTriviaQuizResponses(doc.data().responses));
+  }
+
+  const handleSubmitTriviaResponsesButton = () => {
+    // maybe add a confirm/alert box here?
+    addScore(categoryId, score);
+    setDisplayQuiz(false);
+    getTriviaQuizResponses(categoryId);
   };
+
+  const handleNewTriviaQuizButton = () => {
+    setDisplayQuiz(true);
+    history.push("/dashboard");
+  };
+
+  useEffect(() => {
+    const docRef = db
+      .collection(`users/${currentUser.email}/triviaQuizzes`)
+      .doc(`${categoryId}`);
+
+    function getTriviaQuizData() {
+      docRef
+        .get()
+        .then((doc) => {
+          setTriviaQuizData(doc.data().triviaQuizData);
+        })
+        .catch((error) => console.log(error));
+    }
+    getTriviaQuizData();
+  }, [db, categoryId, currentUser, setTriviaQuizData]);
 
   return (
     <div className={classes.root}>
-      {!isQuizComplete ? (
-        <Question
-          triviaQuizData={triviaQuizData}
-          currentIndex={currentIndex}
-          setCurrentIndex={setCurrentIndex}
-        />
+      {displayQuiz ? (
+        <>
+          <Question
+            currentIndex={currentIndex}
+            setCurrentIndex={setCurrentIndex}
+          />
+          <div style={{ textAlign: "center", marginTop: "-3em" }}>
+            <Button
+              onClick={handleSubmitTriviaResponsesButton}
+              variant="contained"
+              color="primary"
+              startIcon={<SaveIcon />}
+            >
+              Submit Trivia Responses
+            </Button>
+          </div>
+        </>
       ) : (
-        // triviaQuizData.map((question, index) => {
-        //   return (
-        //     <Card key={index}>
-        //       <CardContent>{question.question}</CardContent>
-        //     </Card>
-        //   );
-        // })
-        <TriviaResponsesDisplay score={score} />
+        <>
+          <TriviaResponsesDisplay />
+          <div style={{ textAlign: "center", marginTop: "2em" }}>
+            <Button
+              onClick={handleNewTriviaQuizButton}
+              variant="contained"
+              color="primary"
+            >
+              Start a new Trivia Quiz!
+            </Button>
+          </div>
+        </>
       )}
-      {!isQuizComplete ? (
-        <Button onClick={handleViewTriviaResponses}>
-          Submit and View Trivia Responses
-        </Button>
-      ) : null}
     </div>
   );
 }
 
 export default TriviaQuiz;
-
-// <Card>
-//   <CardContent>
-//     <Question
-//       results={results}
-//       width="100%"
-//       setScore={setScore}
-//       currentIndex={currentIndex}
-//       setCurrentIndex={setCurrentIndex}
-//       isQuizComplete={isQuizComplete}
-//       setIsQuizComplete={setIsQuizComplete}
-//     />
-//   </CardContent>
-// </Card>

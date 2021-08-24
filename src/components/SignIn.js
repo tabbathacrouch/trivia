@@ -32,7 +32,7 @@ function SignIn() {
       setError("");
       setLoading(true);
       await signIn(email, password);
-      history.push("/trivia-quiz");
+      history.push("/dashboard");
     } catch (error) {
       setError("Failed to sign in");
       setLoading(false);

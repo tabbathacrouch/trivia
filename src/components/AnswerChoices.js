@@ -3,19 +3,28 @@ import { Container, Button } from "@material-ui/core";
 import { useStyles } from "../styles/styles";
 import { cleanString, shuffleArray } from "../helper functions/helperFunctions";
 import { useAuth } from "../contexts/AuthContext";
+import firebase from "firebase/app";
+import "firebase/firestore";
 
-function AnswerChoices({
-  currentIndex,
-  setCurrentIndex,
-  index,
-  question,
-  setScore,
-  selection,
-  setSelection,
-}) {
+function AnswerChoices({ question, setCurrentIndex }) {
   const [answerChoices, setAnswerChoices] = useState([]);
-  const [isDisabled, setisDisabled] = useState(false);
-  const { addTriviaResponse } = useAuth();
+  const { db, currentUser, categoryId, setScore } = useAuth();
+
+  // update so that the currentUser can modify or view responses?
+  // see comments in dashboard.js
+
+  function addTriviaResponse(selection) {
+    const docRef = db
+      .collection(`users/${currentUser.email}/triviaQuizzes`)
+      .doc(`${categoryId}`);
+    docRef
+      .update({
+        responses: firebase.firestore.FieldValue.arrayUnion(selection),
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
+      });
+  }
 
   const classes = useStyles();
 
@@ -25,19 +34,17 @@ function AnswerChoices({
       event.target.innerHTML === question.correct_answer &&
       event.target.offsetParent.type === "button"
     ) {
-      event.target.offsetParent.style.backgroundColor = "#4caf50";
       addTriviaResponse({
         selectedAnswer: event.target.innerHTML,
         correct: true,
       });
+      setScore((prevState) => prevState + 1);
     } else if (event.target.offsetParent.type === "button") {
-      event.target.offsetParent.style.backgroundColor = "#f44336";
       addTriviaResponse({
         selectedAnswer: event.target.innerHTML,
         correct: false,
       });
     }
-    setisDisabled(!isDisabled);
     setCurrentIndex((prevState) => prevState + 1);
   };
 
@@ -54,20 +61,17 @@ function AnswerChoices({
 
   return (
     <Container fixed className={classes.answersContainer}>
-      {true
-        ? answerChoices.map((ac, i) => {
-            return (
-              <Button
-                className={classes.answerChoice}
-                onClick={handleButtonClick}
-                key={i}
-                disabled={isDisabled}
-              >
-                {ac}
-              </Button>
-            );
-          })
-        : "hello"}
+      {answerChoices.map((ac, i) => {
+        return (
+          <Button
+            className={classes.answerChoice}
+            onClick={handleButtonClick}
+            key={i}
+          >
+            {ac}
+          </Button>
+        );
+      })}
     </Container>
   );
 }

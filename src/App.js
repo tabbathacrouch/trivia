@@ -1,10 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import TriviaQuiz from "./components/TriviaQuiz";
 import SignIn from "./components/SignIn";
 import Register from "./components/Register";
 import ResetPassword from "./components/ResetPassword";
 import PrivateRoute from "./components/PrivateRoute";
+import TriviaQuiz from "./components/TriviaQuiz";
+import Dashboard from "./components/Dashboard";
 import { useAuth } from "./contexts/AuthContext";
 import "./App.css";
 
@@ -27,6 +28,9 @@ function App() {
             {currentUser ? (
               <>
                 <li>{currentUser.email}</li>
+                <li className="link">
+                  <Link to="/dashboard">Dashboard</Link>
+                </li>
                 <li className="link">
                   <Link to="#" onClick={handleSignOut}>
                     Sign Out
@@ -56,7 +60,8 @@ function App() {
           <Route path="/reset-password">
             <ResetPassword />
           </Route>
-          <PrivateRoute path="/trivia-quiz" exact component={TriviaQuiz} />
+          <PrivateRoute path="/dashboard" component={Dashboard} />
+          <PrivateRoute path="/trivia-quiz" component={TriviaQuiz} />
         </Switch>
       </div>
     </Router>

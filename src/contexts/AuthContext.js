@@ -1,6 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import firebase from "firebase/app";
-import "firebase/firestore";
 import { auth, db } from "../firebase";
 
 const AuthContext = React.createContext();
@@ -13,38 +11,39 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [triviaQuizData, setTriviaQuizData] = useState("");
-  const [triviaQuizResponses, setTriviaQuizResponses] = useState([]);
+  const [categoryId, setCategoryId] = useState(9);
   const [score, setScore] = useState(0);
+  const [triviaQuizResponses, setTriviaQuizResponses] = useState([]);
+  const categoryIDs = ["27", "11", "12", "9", "22", "23", "19", "17"];
 
-  const fetchTriviaData = () => {
+  const fetchTriviaData = (categoryId, email) => {
     fetch(
-      "https://opentdb.com/api.php?amount=30&category=11&difficulty=easy&type=multiple"
+      `https://opentdb.com/api.php?amount=30&category=${categoryId}&type=multiple`
     )
       .then((response) => response.json())
       .then((data) => {
-        setTriviaQuizData(data.results);
+        db.collection(`users/${email}/triviaQuizzes`).doc(`${categoryId}`).set({
+          triviaQuizData: data.results,
+          score: 0,
+          responses: [],
+        });
       })
       .catch((error) => console.log(error));
   };
 
-  function register(name, email, password) {
+  function register(email, password) {
     const userDocRef = db.collection("users").doc(`${email}`);
     userDocRef
       .set({
-        name: name,
         email: email,
-        triviaQuizData: {
-          score: 0,
-          responses: [],
-          data: triviaQuizData,
-        },
       })
       .catch((error) => {
         console.error("Error adding document: ", error);
       });
-    userDocRef.update({
-      "triviaQuizData.responses": firebase.firestore.FieldValue.arrayRemove(""),
+    categoryIDs.forEach((ID) => {
+      fetchTriviaData(ID, email);
     });
+
     return auth.createUserWithEmailAndPassword(email, password);
   }
 
@@ -60,60 +59,29 @@ export function AuthProvider({ children }) {
     return auth.sendPasswordResetEmail(email);
   }
 
-  function addTriviaResponse(selection) {
-    const userDocRef = db.collection("users").doc(currentUser.email);
-    userDocRef
-      .update({
-        "triviaQuizData.responses":
-          firebase.firestore.FieldValue.arrayUnion(selection),
-      })
-      .catch((error) => {
-        console.log("Error getting document:", error);
-      });
-  }
-
-  function getTriviaResponses() {
-    if (currentUser) {
-      const userDocRef = db.collection("users").doc(currentUser.email);
-      userDocRef.get().then((doc) => {
-        setTriviaQuizResponses(
-          doc
-            .data()
-            .triviaQuizData.responses.filter(
-              (response) => response.selectedAnswer
-            )
-        );
-      });
-    }
-  }
-
-  // function addScore(score) {
-  //   db.collection("users")
-  //     .doc(currentUser.email)
-  //     .update({ [triviaQuizData.score]: score });
-  // }
-
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
       setLoading(false);
     });
-    fetchTriviaData();
     return unsubscribe;
   }, []);
 
   const value = {
     currentUser,
+    db,
+    triviaQuizData,
+    categoryId,
+    score,
+    triviaQuizResponses,
     register,
     signIn,
     signOut,
     resetPassword,
-    addTriviaResponse,
-    triviaQuizData,
     setTriviaQuizData,
-    getTriviaResponses,
-    triviaQuizResponses,
-    db,
+    setCategoryId,
+    setScore,
+    setTriviaQuizResponses,
   };
 
   return (

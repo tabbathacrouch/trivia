@@ -1,23 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Card, CardContent } from "@material-ui/core";
 import { useAuth } from "../contexts/AuthContext";
 import { useStyles } from "../styles/styles";
 import { cleanString } from "../helper functions/helperFunctions";
 
-function TriviaResponsesDisplay({ score }) {
+function TriviaResponsesDisplay() {
+  const { triviaQuizData, score, triviaQuizResponses } = useAuth();
   const classes = useStyles();
-  const { triviaQuizData, getTriviaResponses, triviaQuizResponses } = useAuth();
-
-  console.log("triviaQuizResponses", triviaQuizResponses[0]);
-
-  useEffect(() => {
-    getTriviaResponses();
-  }, []);
 
   return (
     <>
       <Card className={classes.root}>
-        <div className={classes.score}>{score}%</div>
+        <div className={classes.score}>
+          {score}/30 = {Math.round((score / 30) * 100)}%
+        </div>
         {triviaQuizData.map((question, index) => (
           <CardContent key={index}>
             <div

@@ -1,24 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Card, CardContent, Typography } from "@material-ui/core";
 import { useStyles } from "../styles/styles";
-
 import AnswerChoices from "./AnswerChoices";
 import { cleanString } from "../helper functions/helperFunctions";
 import { useAuth } from "../contexts/AuthContext";
 
-function Question({ triviaQuizData, setScore, currentIndex, setCurrentIndex }) {
+function Question({ currentIndex, setCurrentIndex }) {
   const classes = useStyles();
-  const [selection, setSelection] = useState("");
-
-  const { addTriviaResponse } = useAuth();
-
-  useEffect(() => {
-    addTriviaResponse(selection);
-  }, [addTriviaResponse, selection]);
+  const { triviaQuizData } = useAuth();
 
   return (
     <div className={classes.container}>
-      {
+      {triviaQuizData &&
         triviaQuizData.map((question, index) => {
           return (
             <Card key={index}>
@@ -44,9 +37,6 @@ function Question({ triviaQuizData, setScore, currentIndex, setCurrentIndex }) {
                   <AnswerChoices
                     index={index}
                     question={question}
-                    setScore={setScore}
-                    selection={selection}
-                    setSelection={setSelection}
                     currentIndex={currentIndex}
                     setCurrentIndex={setCurrentIndex}
                   />
@@ -54,8 +44,7 @@ function Question({ triviaQuizData, setScore, currentIndex, setCurrentIndex }) {
               </CardContent>
             </Card>
           );
-        })[currentIndex]
-      }
+        })[currentIndex]}
     </div>
   );
 }
