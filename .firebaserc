@@ -1,5 +1,5 @@
 {
   "projects": {
-    "default": process.env.REACT_APP_FIREBASE_PROJECTID
-    }
+    "default": "trivia-55bef"
+  }
 }
