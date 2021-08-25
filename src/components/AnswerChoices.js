@@ -7,6 +7,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 
 function AnswerChoices({ question, setCurrentIndex }) {
+  const classes = useStyles();
   const [answerChoices, setAnswerChoices] = useState([]);
   const { db, currentUser, categoryId, setScore } = useAuth();
 
@@ -25,8 +26,6 @@ function AnswerChoices({ question, setCurrentIndex }) {
         console.log("Error getting document:", error);
       });
   }
-
-  const classes = useStyles();
 
   const handleButtonClick = (event) => {
     event.preventDefault();
