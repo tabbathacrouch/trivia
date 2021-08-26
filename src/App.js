@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import SignIn from "./components/SignIn";
 import Register from "./components/Register";
@@ -11,6 +11,10 @@ import "./App.css";
 
 function App() {
   const { currentUser, signOut } = useAuth();
+  const [categoryId, setCategoryId] = useState(9);
+  const [score, setScore] = useState(0);
+  const [triviaQuizData, setTriviaQuizData] = useState([]);
+  const [triviaQuizResponses, setTriviaQuizResponses] = useState([]);
 
   async function handleSignOut() {
     try {
@@ -60,8 +64,23 @@ function App() {
           <Route path="/reset-password">
             <ResetPassword />
           </Route>
-          <PrivateRoute path="/dashboard" component={Dashboard} />
-          <PrivateRoute path="/trivia-quiz" component={TriviaQuiz} />
+          <PrivateRoute
+            path="/dashboard"
+            component={Dashboard}
+            categoryId={categoryId}
+            setCategoryId={setCategoryId}
+            setTriviaQuizData={setTriviaQuizData}
+          />
+          <PrivateRoute
+            path="/trivia-quiz"
+            component={TriviaQuiz}
+            categoryId={categoryId}
+            triviaQuizData={triviaQuizData}
+            score={score}
+            setScore={setScore}
+            triviaQuizResponses={triviaQuizResponses}
+            setTriviaQuizResponses={setTriviaQuizResponses}
+          />
         </Switch>
       </div>
     </Router>

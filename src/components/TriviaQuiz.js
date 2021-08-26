@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import Question from "./Question";
@@ -7,31 +7,21 @@ import { useStyles } from "../styles/styles";
 import TriviaResponsesDisplay from "./TriviaResponsesDisplay";
 import { useHistory } from "react-router-dom";
 
-function TriviaQuiz() {
+function TriviaQuiz({
+  categoryId,
+  score,
+  setScore,
+  triviaQuizData,
+  triviaQuizResponses,
+  setTriviaQuizResponses,
+}) {
   const classes = useStyles();
+  const { db, currentUser } = useAuth();
+  const history = useHistory();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayQuiz, setDisplayQuiz] = useState(true);
-  const {
-    db,
-    currentUser,
-    categoryId,
-    score,
-    setScore,
-    setTriviaQuizData,
-    setTriviaQuizResponses,
-    triviaQuizResponses,
-  } = useAuth();
-  const history = useHistory();
 
-  function addScore(categoryId, score) {
-    db.collection(`users/${currentUser.email}/triviaQuizzes`)
-      .doc(`${categoryId}`)
-      .update({
-        score: score,
-      });
-  }
-
-  useEffect(() => {
+  function addScore() {
     let currentScore = [];
     triviaQuizResponses.forEach((response) => {
       if (response.correct === true) {
@@ -39,43 +29,37 @@ function TriviaQuiz() {
       }
     });
     setScore(currentScore.length);
-    addScore(categoryId, score);
-  });
-
-  function getTriviaQuizResponses(categoryId) {
     db.collection(`users/${currentUser.email}/triviaQuizzes`)
       .doc(`${categoryId}`)
-      .get()
-      .then((doc) => setTriviaQuizResponses(doc.data().responses));
+      .update({
+        score: score,
+      });
+  }
+
+  function addTriviaResponses() {
+    const docRef = db
+      .collection(`users/${currentUser.email}/triviaQuizzes`)
+      .doc(`${categoryId}`);
+    docRef
+      .update({
+        responses: triviaQuizResponses,
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
+      });
   }
 
   const handleSubmitTriviaResponsesButton = () => {
     // maybe add a confirm/alert box here?
-    addScore(categoryId, score);
+    addScore();
+    addTriviaResponses();
     setDisplayQuiz(false);
-    getTriviaQuizResponses(categoryId);
   };
 
   const handleNewTriviaQuizButton = () => {
     setDisplayQuiz(true);
     history.push("/dashboard");
   };
-
-  useEffect(() => {
-    const docRef = db
-      .collection(`users/${currentUser.email}/triviaQuizzes`)
-      .doc(`${categoryId}`);
-
-    function getTriviaQuizData() {
-      docRef
-        .get()
-        .then((doc) => {
-          setTriviaQuizData(doc.data().triviaQuizData);
-        })
-        .catch((error) => console.log(error));
-    }
-    getTriviaQuizData();
-  }, [db, categoryId, currentUser, setTriviaQuizData]);
 
   return (
     <div className={classes.root}>
@@ -84,6 +68,9 @@ function TriviaQuiz() {
           <Question
             currentIndex={currentIndex}
             setCurrentIndex={setCurrentIndex}
+            triviaQuizData={triviaQuizData}
+            setScore={setScore}
+            setTriviaQuizResponses={setTriviaQuizResponses}
           />
           <div style={{ textAlign: "center", marginTop: "-3em" }}>
             <Button
@@ -98,7 +85,11 @@ function TriviaQuiz() {
         </>
       ) : (
         <>
-          <TriviaResponsesDisplay />
+          <TriviaResponsesDisplay
+            score={score}
+            triviaQuizData={triviaQuizData}
+            triviaQuizResponses={triviaQuizResponses}
+          />
           <div style={{ textAlign: "center", marginTop: "2em" }}>
             <Button
               onClick={handleNewTriviaQuizButton}

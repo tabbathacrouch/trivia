@@ -10,26 +10,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [triviaQuizData, setTriviaQuizData] = useState("");
-  const [categoryId, setCategoryId] = useState(9);
-  const [score, setScore] = useState(0);
-  const [triviaQuizResponses, setTriviaQuizResponses] = useState([]);
   const categoryIDs = ["27", "11", "12", "9", "22", "23", "19", "17"];
-
-  const fetchTriviaData = (categoryId, email) => {
-    fetch(
-      `https://opentdb.com/api.php?amount=30&category=${categoryId}&type=multiple`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        db.collection(`users/${email}/triviaQuizzes`).doc(`${categoryId}`).set({
-          triviaQuizData: data.results,
-          score: 0,
-          responses: [],
-        });
-      })
-      .catch((error) => console.log(error));
-  };
 
   function register(email, password) {
     const userDocRef = db.collection("users").doc(`${email}`);
@@ -40,10 +21,13 @@ export function AuthProvider({ children }) {
       .catch((error) => {
         console.error("Error adding document: ", error);
       });
-    categoryIDs.forEach((ID) => {
-      fetchTriviaData(ID, email);
+    categoryIDs.forEach((category) => {
+      db.collection(`users/${email}/triviaQuizzes`).doc(`${category}`).set({
+        triviaQuizData: [],
+        score: 0,
+        responses: [],
+      });
     });
-
     return auth.createUserWithEmailAndPassword(email, password);
   }
 
@@ -70,18 +54,10 @@ export function AuthProvider({ children }) {
   const value = {
     currentUser,
     db,
-    triviaQuizData,
-    categoryId,
-    score,
-    triviaQuizResponses,
     register,
     signIn,
     signOut,
     resetPassword,
-    setTriviaQuizData,
-    setCategoryId,
-    setScore,
-    setTriviaQuizResponses,
   };
 
   return (

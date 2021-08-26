@@ -61,9 +61,8 @@ export const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     justifyContent: "center",
   },
-  card: {
+  card_div: {
     margin: theme.spacing(2),
-    paddingBottom: theme.spacing(0),
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -74,10 +73,13 @@ export const useStyles = makeStyles((theme) => ({
     "&:nth-child(1)": { background: "#bbdefb" },
     "&:nth-child(2)": { background: "#e1bee7" },
     "&:nth-child(3)": { background: "#f8bbd0" },
-    "&:nth-child(4)": { background: "white" },
+    "&:nth-child(4)": { background: "#f5f5f5" },
     "&:nth-child(5)": { background: "#ffcdd2" },
     "&:nth-child(6)": { background: "#b2dfdb" },
     "&:nth-child(7)": { background: "#fff9c4" },
     "&:nth-child(8)": { background: "#c8e6c9" },
+  },
+  card: {
+    paddingTop: theme.spacing(1),
   },
 }));

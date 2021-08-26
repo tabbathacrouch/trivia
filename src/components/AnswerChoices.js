@@ -2,30 +2,32 @@ import React, { useEffect, useState } from "react";
 import { Container, Button } from "@material-ui/core";
 import { useStyles } from "../styles/styles";
 import { cleanString, shuffleArray } from "../helper functions/helperFunctions";
-import { useAuth } from "../contexts/AuthContext";
-import firebase from "firebase/app";
-import "firebase/firestore";
 
-function AnswerChoices({ question, setCurrentIndex }) {
+function AnswerChoices({
+  question,
+  setCurrentIndex,
+  categoryId,
+  setScore,
+  setTriviaQuizResponses,
+}) {
   const classes = useStyles();
   const [answerChoices, setAnswerChoices] = useState([]);
-  const { db, currentUser, categoryId, setScore } = useAuth();
 
   // update so that the currentUser can modify or view responses?
   // see comments in dashboard.js
 
-  function addTriviaResponse(selection) {
-    const docRef = db
-      .collection(`users/${currentUser.email}/triviaQuizzes`)
-      .doc(`${categoryId}`);
-    docRef
-      .update({
-        responses: firebase.firestore.FieldValue.arrayUnion(selection),
-      })
-      .catch((error) => {
-        console.log("Error getting document:", error);
-      });
-  }
+  // function addTriviaResponse(selection) {
+  //   const docRef = db
+  //     .collection(`users/${currentUser.email}/triviaQuizzes`)
+  //     .doc(`${categoryId}`);
+  //   docRef
+  //     .update({
+  //       responses: firebase.firestore.FieldValue.arrayUnion(selection),
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error getting document:", error);
+  //     });
+  // }
 
   const handleButtonClick = (event) => {
     event.preventDefault();
@@ -33,16 +35,22 @@ function AnswerChoices({ question, setCurrentIndex }) {
       event.target.innerHTML === question.correct_answer &&
       event.target.offsetParent.type === "button"
     ) {
-      addTriviaResponse({
-        selectedAnswer: event.target.innerHTML,
-        correct: true,
-      });
+      setTriviaQuizResponses((prevState) => [
+        ...prevState,
+        {
+          selectedAnswer: event.target.innerHTML,
+          correct: true,
+        },
+      ]);
       setScore((prevState) => prevState + 1);
     } else if (event.target.offsetParent.type === "button") {
-      addTriviaResponse({
-        selectedAnswer: event.target.innerHTML,
-        correct: false,
-      });
+      setTriviaQuizResponses((prevState) => [
+        ...prevState,
+        {
+          selectedAnswer: event.target.innerHTML,
+          correct: false,
+        },
+      ]);
     }
     setCurrentIndex((prevState) => prevState + 1);
   };
@@ -60,12 +68,12 @@ function AnswerChoices({ question, setCurrentIndex }) {
 
   return (
     <Container fixed className={classes.answersContainer}>
-      {answerChoices.map((ac, i) => {
+      {answerChoices.map((ac) => {
         return (
           <Button
             className={classes.answerChoice}
             onClick={handleButtonClick}
-            key={i}
+            key={ac}
           >
             {ac}
           </Button>
