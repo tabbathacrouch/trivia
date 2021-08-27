@@ -63,13 +63,18 @@ export const useStyles = makeStyles((theme) => ({
   },
   card_div: {
     margin: theme.spacing(2),
+    boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
+    transition: "0.3s",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontWeight: "500",
-    minWidth: "250px",
+    flexDirection: "column",
+    minWidth: "300px",
     minHeight: "150px",
-    "&:hover": { transform: "scale3d(1.15, 1.15, 1)" },
+    "&:hover": {
+      transform: "scale3d(1.15, 1.15, 1)",
+      boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)",
+    },
     "&:nth-child(1)": { background: "#bbdefb" },
     "&:nth-child(2)": { background: "#e1bee7" },
     "&:nth-child(3)": { background: "#f8bbd0" },
@@ -81,5 +86,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   card: {
     paddingTop: theme.spacing(1),
+    fontWeight: "650",
+    fontSize: "1.25rem",
   },
 }));

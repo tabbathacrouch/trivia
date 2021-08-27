@@ -6,28 +6,11 @@ import { cleanString, shuffleArray } from "../helper functions/helperFunctions";
 function AnswerChoices({
   question,
   setCurrentIndex,
-  categoryId,
   setScore,
   setTriviaQuizResponses,
 }) {
   const classes = useStyles();
   const [answerChoices, setAnswerChoices] = useState([]);
-
-  // update so that the currentUser can modify or view responses?
-  // see comments in dashboard.js
-
-  // function addTriviaResponse(selection) {
-  //   const docRef = db
-  //     .collection(`users/${currentUser.email}/triviaQuizzes`)
-  //     .doc(`${categoryId}`);
-  //   docRef
-  //     .update({
-  //       responses: firebase.firestore.FieldValue.arrayUnion(selection),
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error getting document:", error);
-  //     });
-  // }
 
   const handleButtonClick = (event) => {
     event.preventDefault();

@@ -31,11 +31,22 @@ function SignIn() {
     try {
       setError("");
       setLoading(true);
-      await signIn(email, password);
-      history.push("/dashboard");
+      if (!/^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+        setError("Invalid Email");
+        setLoading(false);
+        return;
+      } else if (password.length < 6) {
+        setError("Password should contain at least 6 characters");
+        setLoading(false);
+        return;
+      } else {
+        await signIn(email, password);
+        history.push("/dashboard");
+      }
     } catch (error) {
-      setError("Failed to sign in");
+      setError("Incorrect email and password combination");
       setLoading(false);
+      console.log(error);
     }
   }
 
@@ -50,11 +61,6 @@ function SignIn() {
           Sign in
         </Typography>
         <form className={classes.form}>
-          {error ? (
-            <Alert variant="outlined" severity="error">
-              {error}
-            </Alert>
-          ) : null}
           <TextField
             variant="outlined"
             margin="normal"
@@ -81,6 +87,11 @@ function SignIn() {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
+          {error ? (
+            <Alert variant="outlined" severity="error">
+              {error}
+            </Alert>
+          ) : null}
           <Button
             type="submit"
             fullWidth

@@ -22,6 +22,7 @@ function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const { register } = useAuth();
   const history = useHistory();
 
@@ -30,12 +31,26 @@ function Register() {
     try {
       setError("");
       setLoading(true);
-      await register(email, password);
-      history.push("/dashboard");
+      if (password !== confirmPassword) {
+        setError("Password and confirmation password do not match");
+        setLoading(false);
+        return;
+      } else if (password.length < 6) {
+        setError("Password should contain at least 6 characters");
+        setLoading(false);
+        return;
+      } else if (!/^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+        setError("Invalid Email");
+        setLoading(false);
+        return;
+      } else {
+        await register(email, password);
+        history.push("/dashboard");
+      }
     } catch (error) {
-      console.log(error);
       setError("Failed to create an account");
       setLoading(false);
+      console.log(error);
     }
   }
 
@@ -50,11 +65,6 @@ function Register() {
           Register
         </Typography>
         <form className={classes.form}>
-          {error ? (
-            <Alert variant="outlined" severity="error">
-              {error}
-            </Alert>
-          ) : null}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -99,7 +109,26 @@ function Register() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                label="Confirm Password"
+                type="password"
+                id="confirm_password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </Grid>
           </Grid>
+          {error ? (
+            <div style={{ marginTop: "1rem" }}>
+              <Alert variant="outlined" severity="error">
+                {error}
+              </Alert>
+            </div>
+          ) : null}
           <Button
             type="submit"
             fullWidth

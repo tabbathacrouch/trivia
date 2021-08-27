@@ -7,19 +7,14 @@ import { useStyles } from "../styles/styles";
 import TriviaResponsesDisplay from "./TriviaResponsesDisplay";
 import { useHistory } from "react-router-dom";
 
-function TriviaQuiz({
-  categoryId,
-  score,
-  setScore,
-  triviaQuizData,
-  triviaQuizResponses,
-  setTriviaQuizResponses,
-}) {
+function TriviaQuiz({ categoryId, triviaQuizData }) {
   const classes = useStyles();
   const { db, currentUser } = useAuth();
   const history = useHistory();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayQuiz, setDisplayQuiz] = useState(true);
+  const [triviaQuizResponses, setTriviaQuizResponses] = useState([]);
+  const [score, setScore] = useState(0);
 
   function addScore() {
     let currentScore = [];
@@ -72,16 +67,18 @@ function TriviaQuiz({
             setScore={setScore}
             setTriviaQuizResponses={setTriviaQuizResponses}
           />
-          <div style={{ textAlign: "center", marginTop: "-3em" }}>
-            <Button
-              onClick={handleSubmitTriviaResponsesButton}
-              variant="contained"
-              color="primary"
-              startIcon={<SaveIcon />}
-            >
-              Submit Trivia Responses
-            </Button>
-          </div>
+          {currentIndex === 30 ? (
+            <div style={{ textAlign: "center", marginTop: "2em" }}>
+              <Button
+                onClick={handleSubmitTriviaResponsesButton}
+                variant="contained"
+                color="primary"
+                startIcon={<SaveIcon />}
+              >
+                Submit Trivia Responses
+              </Button>
+            </div>
+          ) : null}
         </>
       ) : (
         <>
@@ -95,6 +92,7 @@ function TriviaQuiz({
               onClick={handleNewTriviaQuizButton}
               variant="contained"
               color="primary"
+              size="large"
             >
               Start a new Trivia Quiz!
             </Button>

@@ -11,10 +11,8 @@ import "./App.css";
 
 function App() {
   const { currentUser, signOut } = useAuth();
-  const [categoryId, setCategoryId] = useState(9);
-  const [score, setScore] = useState(0);
+  const [categoryId, setCategoryId] = useState("9");
   const [triviaQuizData, setTriviaQuizData] = useState([]);
-  const [triviaQuizResponses, setTriviaQuizResponses] = useState([]);
 
   async function handleSignOut() {
     try {
@@ -76,10 +74,6 @@ function App() {
             component={TriviaQuiz}
             categoryId={categoryId}
             triviaQuizData={triviaQuizData}
-            score={score}
-            setScore={setScore}
-            triviaQuizResponses={triviaQuizResponses}
-            setTriviaQuizResponses={setTriviaQuizResponses}
           />
         </Switch>
       </div>

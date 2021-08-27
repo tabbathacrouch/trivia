@@ -8,79 +8,95 @@ const categories = [
   {
     id: "27",
     name: "Animals",
+    score: null,
   },
   {
     id: "11",
     name: "Entertainment: Film",
+    score: null,
   },
   {
     id: "12",
     name: "Entertainment: Music",
+    score: null,
   },
   {
     id: "9",
     name: "General Knowledge",
+    score: null,
   },
   {
     id: "22",
     name: "Geography",
+    score: null,
   },
   {
     id: "23",
     name: "History",
+    score: null,
   },
   {
     id: "19",
     name: "Science: Mathematics",
+    score: null,
   },
   {
     id: "17",
     name: "Science & Nature",
+    score: null,
   },
 ];
 
-function Dashboard({ categoryId, setCategoryId, setTriviaQuizData }) {
+function Dashboard({ setCategoryId, setTriviaQuizData }) {
   const classes = useStyles();
   const history = useHistory();
   const { db, currentUser } = useAuth();
 
-  async function fetchAndSetTriviaData(categoryId, email) {
-    const docRef = db
-      .collection(`users/${email}/triviaQuizzes`)
-      .doc(`${categoryId}`);
-    await fetch(
-      `https://opentdb.com/api.php?amount=30&category=${categoryId}&type=multiple`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        docRef.update({
-          triviaQuizData: data.results,
+  function getScores() {
+    const array = categories.map((i) => i.id);
+    array.forEach((id, index) => {
+      db.collection(`users/${currentUser.email}/triviaQuizzes`)
+        .doc(`${id}`)
+        .onSnapshot((doc) => {
+          if (doc.data().score > 0) {
+            Object.defineProperty(categories[index], "score", {
+              value: doc.data().score,
+            });
+          }
         });
-        setTriviaQuizData(data.results);
+    });
+  }
+  getScores();
+
+  const fetchAndSetTriviaData = (category, email) => {
+    const docRef = db.collection(`users/${email}/triviaQuizzes`).doc(category);
+    docRef
+      .get()
+      .then((doc) => {
+        if (doc.data().triviaQuizData.length === 30) {
+          setTriviaQuizData(doc.data().triviaQuizData);
+        } else {
+          fetch(
+            `https://opentdb.com/api.php?amount=30&category=${category}&type=multiple`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              docRef.update({
+                triviaQuizData: data.results,
+              });
+              setTriviaQuizData(data.results);
+            })
+            .catch((error) => console.log(error));
+        }
       })
       .catch((error) => console.log(error));
-  }
+  };
 
-  // update to show the score if the currentUser has already taken the quiz?
-  // could disable the 'card' so that a user can't take the quiz twice?
-
-  // function getScore(id) {
-  //   db.collection(`users/${currentUser.email}/triviaQuizzes`)
-  //     .doc(`${id}`)
-  //     .onSnapshot((doc) => {
-  //       return doc.data().score;
-  //     });
-  // }
-
-  async function handleCategorySelection(event) {
+  const handleCategorySelection = (event) => {
     setCategoryId(event.target.id);
-    try {
-      fetchAndSetTriviaData(categoryId, currentUser.email);
-      history.push("/trivia-quiz");
-    } catch (error) {
-      console.log(error);
-    }
-  }
+    fetchAndSetTriviaData(event.target.id, currentUser.email);
+    history.push("/trivia-quiz");
+  };
 
   return (
     <div className={classes.card_container}>
@@ -89,6 +105,16 @@ function Dashboard({ categoryId, setCategoryId, setTriviaQuizData }) {
           <Card onClick={handleCategorySelection} className={classes.card}>
             <CardContent id={category.id}>{category.name}</CardContent>
           </Card>
+          <div
+            style={{
+              fontWeight: "650",
+              fontSize: "1.25rem",
+            }}
+          >
+            {category.score
+              ? `${Math.round((category.score / 30) * 100)}%`
+              : null}
+          </div>
         </div>
       ))}
     </div>
