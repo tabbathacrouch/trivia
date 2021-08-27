@@ -1,16 +1,20 @@
 # Trivia
 
-#### Choose a Category!
+#### Register as a user!
+
+![Register](public/register.png)
+
+#### Choose a category!
 
 ![Categories](public/categories.png)
 
-#### Answer 30 Multiple Choice Trivia Questions
+#### Answer 30 multiple choice trivia questions!
 
 ![Question](public/question.png)
 
 ## Project Details
 
-This react app utilizes firebase authentication to register/sign in users, and firebase firestore to serve the database. Choose a category and answer 30 multiple choice questions from the [open trivia database API](https://opentdb.com/api_config.php). View your score and compare with friends!
+This react app utilizes firebase authentication to register/sign in users, firebase firestore to serve the database, and material ui for styling. Choose a category and answer 30 multiple choice questions from the [open trivia database API](https://opentdb.com/api_config.php). View your score and compare with friends!
 
 ## To run this project:
 
