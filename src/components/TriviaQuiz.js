@@ -67,18 +67,16 @@ function TriviaQuiz({ categoryId, triviaQuizData }) {
             setScore={setScore}
             setTriviaQuizResponses={setTriviaQuizResponses}
           />
-          {currentIndex === 30 ? (
-            <div style={{ textAlign: "center", marginTop: "2em" }}>
-              <Button
-                onClick={handleSubmitTriviaResponsesButton}
-                variant="contained"
-                color="primary"
-                startIcon={<SaveIcon />}
-              >
-                Submit Trivia Responses
-              </Button>
-            </div>
-          ) : null}
+          <div style={{ textAlign: "center", marginTop: "2em" }}>
+            <Button
+              onClick={handleSubmitTriviaResponsesButton}
+              variant="contained"
+              color="primary"
+              startIcon={<SaveIcon />}
+            >
+              Submit Trivia Responses
+            </Button>
+          </div>
         </>
       ) : (
         <>

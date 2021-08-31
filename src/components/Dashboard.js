@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, CardContent } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -52,21 +52,23 @@ function Dashboard({ setCategoryId, setTriviaQuizData }) {
   const history = useHistory();
   const { db, currentUser } = useAuth();
 
-  function getScores() {
-    const array = categories.map((i) => i.id);
-    array.forEach((id, index) => {
-      db.collection(`users/${currentUser.email}/triviaQuizzes`)
-        .doc(`${id}`)
-        .onSnapshot((doc) => {
-          if (doc.data().score > 0) {
-            Object.defineProperty(categories[index], "score", {
-              value: doc.data().score,
-            });
-          }
-        });
-    });
-  }
-  getScores();
+  useEffect(() => {
+    function getScores() {
+      const array = categories.map((i) => i.id);
+      array.forEach((id, index) => {
+        db.collection(`users/${currentUser.email}/triviaQuizzes`)
+          .doc(`${id}`)
+          .onSnapshot((doc) => {
+            if (doc.data().score > 0) {
+              Object.defineProperty(categories[index], "score", {
+                value: doc.data().score,
+              });
+            }
+          });
+      });
+    }
+    getScores();
+  }, [currentUser.email, db]);
 
   const fetchAndSetTriviaData = (category, email) => {
     const docRef = db.collection(`users/${email}/triviaQuizzes`).doc(category);
@@ -102,19 +104,14 @@ function Dashboard({ setCategoryId, setTriviaQuizData }) {
     <div className={classes.card_container}>
       {categories.map((category) => (
         <div key={category.id} className={classes.card_div}>
-          <Card onClick={handleCategorySelection} className={classes.card}>
-            <CardContent id={category.id}>{category.name}</CardContent>
-          </Card>
-          <div
-            style={{
-              fontWeight: "650",
-              fontSize: "1.25rem",
-            }}
-          >
+          <div className={classes.card_score}>
             {category.score
               ? `${Math.round((category.score / 30) * 100)}%`
               : null}
           </div>
+          <Card onClick={handleCategorySelection} className={classes.card}>
+            <CardContent id={category.id}>{category.name}</CardContent>
+          </Card>
         </div>
       ))}
     </div>

@@ -1,12 +1,14 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
-  root: { padding: "2em" },
+  root: {
+    padding: theme.spacing(2),
+  },
   score: { fontSize: "2em", display: "flex", justifyContent: "flex-end" },
   container: {
     display: "flex",
     justifyContent: "center",
-    marginBlock: "5em",
+    marginBlock: "5vw",
   },
   questionNumber: { fontSize: "1.5em" },
   question: {
@@ -49,14 +51,13 @@ export const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%",
     marginTop: theme.spacing(3),
   },
   submit: {
     margin: theme.spacing(2, 0, 2),
   },
   card_container: {
-    marginTop: theme.spacing(5),
+    marginTop: theme.spacing(1),
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "center",
@@ -66,11 +67,10 @@ export const useStyles = makeStyles((theme) => ({
     boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
     transition: "0.3s",
     display: "flex",
-    alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
-    minWidth: "300px",
-    minHeight: "150px",
+    minWidth: "20vw",
+    minHeight: "15vh",
     "&:hover": {
       transform: "scale3d(1.15, 1.15, 1)",
       boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)",
@@ -79,8 +79,8 @@ export const useStyles = makeStyles((theme) => ({
     "&:nth-child(2)": { background: "#e1bee7" },
     "&:nth-child(3)": { background: "#f8bbd0" },
     "&:nth-child(4)": { background: "#f5f5f5" },
-    "&:nth-child(5)": { background: "#ffcdd2" },
-    "&:nth-child(6)": { background: "#b2dfdb" },
+    "&:nth-child(5)": { background: "#b2dfdb" },
+    "&:nth-child(6)": { background: "#ffcdd2" },
     "&:nth-child(7)": { background: "#fff9c4" },
     "&:nth-child(8)": { background: "#c8e6c9" },
   },
@@ -88,5 +88,11 @@ export const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(1),
     fontWeight: "650",
     fontSize: "1.25rem",
+  },
+  card_score: {
+    fontWeight: "650",
+    fontSize: "1.25rem",
+    display: "flex",
+    justifyContent: "flex-end",
   },
 }));
