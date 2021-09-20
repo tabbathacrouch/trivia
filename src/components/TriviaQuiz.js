@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "@material-ui/core";
+import { Card, Button } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import Question from "./Question";
 import { useAuth } from "../contexts/AuthContext";
@@ -67,16 +67,21 @@ function TriviaQuiz({ categoryId, triviaQuizData }) {
             setScore={setScore}
             setTriviaQuizResponses={setTriviaQuizResponses}
           />
-          <div style={{ textAlign: "center", marginTop: "2em" }}>
-            <Button
-              onClick={handleSubmitTriviaResponsesButton}
-              variant="contained"
-              color="primary"
-              startIcon={<SaveIcon />}
-            >
-              Submit Trivia Responses
-            </Button>
-          </div>
+          {currentIndex === 30 ? (
+            <Card className={classes.root} style={{ margin: "3em" }}>
+              <div style={{ textAlign: "center", margin: "5em" }}>
+                <Button
+                  onClick={handleSubmitTriviaResponsesButton}
+                  variant="contained"
+                  color="primary"
+                  startIcon={<SaveIcon />}
+                  style={{ height: "100px", width: "350px" }}
+                >
+                  Submit Trivia Responses
+                </Button>
+              </div>
+            </Card>
+          ) : null}
         </>
       ) : (
         <>

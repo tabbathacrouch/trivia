@@ -64,25 +64,50 @@ export const useStyles = makeStyles((theme) => ({
   },
   card_div: {
     margin: theme.spacing(2),
-    boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
+    padding: theme.spacing(2),
+    border: "none",
+    boxShadow: "0 3px 6px 0 rgba(0,0,0,0.4)",
     transition: "0.3s",
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
-    minWidth: "20vw",
-    minHeight: "15vh",
+    minWidth: "25vw",
     "&:hover": {
       transform: "scale3d(1.15, 1.15, 1)",
       boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)",
     },
-    "&:nth-child(1)": { background: "#bbdefb" },
-    "&:nth-child(2)": { background: "#e1bee7" },
-    "&:nth-child(3)": { background: "#f8bbd0" },
-    "&:nth-child(4)": { background: "#f5f5f5" },
-    "&:nth-child(5)": { background: "#b2dfdb" },
-    "&:nth-child(6)": { background: "#ffcdd2" },
-    "&:nth-child(7)": { background: "#fff9c4" },
-    "&:nth-child(8)": { background: "#c8e6c9" },
+    "&:nth-child(1)": {
+      background:
+        "linear-gradient(0deg, rgba(23,103,170,1) 0%, rgba(187,222,251,1) 100%)",
+    },
+    "&:nth-child(2)": {
+      background:
+        "linear-gradient(0deg, rgba(203,78,224,1) 0%, rgba(225,190,231,1) 100%)",
+    },
+    "&:nth-child(3)": {
+      background:
+        "linear-gradient(0deg, rgba(255,41,115,1) 0%, rgba(248,187,208,1) 100%)",
+    },
+    "&:nth-child(4)": {
+      background:
+        "linear-gradient(0deg, rgba(115,115,115,1) 0%, rgba(245,245,245,1) 100%)",
+    },
+    "&:nth-child(5)": {
+      background:
+        "linear-gradient(0deg, rgba(29,105,98,1) 0%, rgba(178,223,219,1) 100%)",
+    },
+    "&:nth-child(6)": {
+      background:
+        "linear-gradient(0deg, rgba(182,26,41,1) 0%, rgba(255,205,210,1) 100%)",
+    },
+    "&:nth-child(7)": {
+      background:
+        "linear-gradient(0deg, rgba(217,196,14,1) 0%, rgba(255,249,196,1) 100%)",
+    },
+    "&:nth-child(8)": {
+      background:
+        "linear-gradient(0deg, rgba(26,168,30,1) 0%, rgba(200,230,201,1) 100%)",
+    },
   },
   card: {
     paddingTop: theme.spacing(1),
