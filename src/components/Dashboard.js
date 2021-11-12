@@ -90,16 +90,17 @@ function Dashboard({ setCategoryId, setTriviaQuizData }) {
 function ScoreCard({ category, onClick }) {
   const classes = useStyles();
   const { db, currentUser } = useAuth();
-  const [score, setScore] = useState(null);
+  const [score, setScore] = useState(0);
 
+  // revisit this: https://firebase.google.com/docs/firestore/query-data/get-data
   useEffect(() => {
     db.collection(`users/${currentUser.email}/triviaQuizzes`)
       .doc(`${category.id}`)
       .onSnapshot((doc) => {
-        const categoryScore = doc.data().score;
-        if (categoryScore > 0) {
-          setScore(categoryScore);
-        }
+        // const categoryScore = doc.data().score;
+        // if (categoryScore > 0) {
+        //   setScore(categoryScore);
+        // }
       });
   });
 

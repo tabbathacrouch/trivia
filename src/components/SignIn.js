@@ -78,7 +78,7 @@ function SignIn() {
             required
             fullWidth
             label="Password"
-            type="password"
+            type="current-password"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

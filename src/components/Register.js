@@ -103,7 +103,7 @@ function Register() {
                 required
                 fullWidth
                 label="Password"
-                type="password"
+                type="new-password"
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -115,7 +115,7 @@ function Register() {
                 required
                 fullWidth
                 label="Confirm Password"
-                type="password"
+                type="confirm-password"
                 id="confirm_password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
