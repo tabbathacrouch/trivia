@@ -93,6 +93,7 @@ function Register() {
                 fullWidth
                 id="email"
                 label="Email Address"
+                autoComplete="username"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -103,7 +104,8 @@ function Register() {
                 required
                 fullWidth
                 label="Password"
-                type="new-password"
+                type="password"
+                autoComplete="new-password"
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -115,7 +117,8 @@ function Register() {
                 required
                 fullWidth
                 label="Confirm Password"
-                type="confirm-password"
+                type="password"
+                autoComplete="confirm-password"
                 id="confirm_password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

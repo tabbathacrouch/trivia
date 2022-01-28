@@ -40,9 +40,10 @@ const categories = [
 ];
 
 function Dashboard({ setCategoryId, setTriviaQuizData }) {
+  console.log("dashboard mounted");
   const classes = useStyles();
   const history = useHistory();
-  const { db, currentUser } = useAuth();
+  const { db, user } = useAuth();
 
   const fetchAndSetTriviaData = (category, email) => {
     const docRef = db.collection(`users/${email}/triviaQuizzes`).doc(category);
@@ -70,7 +71,7 @@ function Dashboard({ setCategoryId, setTriviaQuizData }) {
 
   const handleCategorySelection = (event) => {
     setCategoryId(event.target.id);
-    fetchAndSetTriviaData(event.target.id, currentUser.email);
+    fetchAndSetTriviaData(event.target.id, user.email);
     history.push("/trivia-quiz");
   };
 
@@ -89,25 +90,33 @@ function Dashboard({ setCategoryId, setTriviaQuizData }) {
 
 function ScoreCard({ category, onClick }) {
   const classes = useStyles();
-  const { db, currentUser } = useAuth();
+  const { db, user } = useAuth();
   const [score, setScore] = useState(0);
 
-  // revisit this: https://firebase.google.com/docs/firestore/query-data/get-data
   useEffect(() => {
-    db.collection(`users/${currentUser.email}/triviaQuizzes`)
-      .doc(`${category.id}`)
-      .onSnapshot((doc) => {
-        // const categoryScore = doc.data().score;
-        // if (categoryScore > 0) {
-        //   setScore(categoryScore);
-        // }
-      });
-  });
+    const categoryIds = categories.map((_, i) => categories[i].id);
+    categoryIds.forEach((category) => {
+      (async () => {
+        const userDoc = db
+          .collection("users")
+          .doc(`${user.email}`)
+          .collection("triviaQuizzes")
+          .doc(category);
+
+        const doc = await userDoc.get();
+        if (doc && doc.data().score > 0) {
+          setScore(doc.data().score);
+        } else {
+          console.log(doc.data());
+        }
+      })();
+    });
+  }, [user, db]);
 
   return (
     <div key={category.id} className={classes.card_div}>
       <div className={classes.card_score}>
-        {score ? `${Math.round((score / 30) * 100)}%` : null}
+        {score > 0 ? `${Math.round((score / 30) * 100)}%` : null}
       </div>
       <Card onClick={onClick} className={classes.card}>
         <CardContent id={category.id}>{category.name} </CardContent>

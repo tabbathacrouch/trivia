@@ -41,7 +41,8 @@ function SignIn() {
         return;
       } else {
         await signIn(email, password);
-        history.push("/dashboard");
+        console.log("tits");
+        history.push({ pathname: "/dashboard" });
       }
     } catch (error) {
       setError("Incorrect email and password combination");
@@ -68,6 +69,7 @@ function SignIn() {
             fullWidth
             id="email"
             label="Email Address"
+            autoComplete="username"
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -78,7 +80,8 @@ function SignIn() {
             required
             fullWidth
             label="Password"
-            type="current-password"
+            type="password"
+            autoComplete="current-password"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

@@ -6,11 +6,12 @@ import ResetPassword from "./components/ResetPassword";
 import PrivateRoute from "./components/PrivateRoute";
 import TriviaQuiz from "./components/TriviaQuiz";
 import Dashboard from "./components/Dashboard";
-import { useAuth } from "./contexts/AuthContext";
+
+import { auth } from "./firebase";
 import "./App.css";
 
 function App() {
-  const { currentUser, signOut } = useAuth();
+  const { currentUser, signOut } = auth;
   const [categoryId, setCategoryId] = useState("9");
   const [triviaQuizData, setTriviaQuizData] = useState([]);
 
@@ -21,6 +22,13 @@ function App() {
       console.log("Failed to sign out");
     }
   }
+
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     console.log("App.js", user);
+  //   });
+  //   return unsubscribe;
+  // }, []);
 
   return (
     <Router>
